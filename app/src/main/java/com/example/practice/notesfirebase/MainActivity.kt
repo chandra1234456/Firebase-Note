@@ -38,13 +38,6 @@ class MainActivity : AppCompatActivity() {
         // Set up the Toolbar as ActionBar
         setSupportActionBar(mainBinding.toolbar)
 
-        Firebase.appDistribution.showFeedbackNotification(
-                // Text providing notice to your testers about collection and
-                // processing of their feedback data
-                "R.string.additionalFormText",
-                // The level of interruption for the notification
-                InterruptionLevel.HIGH)
-
         val result = getLoadTheData(this)
         Log.d("TAG", "Result from getLoadTheData: $result")
         val (userEmail, userPassword) = result ?: let {

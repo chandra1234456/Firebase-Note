@@ -71,7 +71,7 @@
         tools:layout="@layout/fragment_saved" />
     <fragment
         android:id="@+id/feedBackFragment"
-        android:name="com.example.practice.notesfirebase.FeedBackFragment"
+        android:name="com.example.practice.notesfirebase.feedback.FeedBackFragment"
         android:label="FeedBack"
         tools:layout="@layout/fragment_feed_back" />
 </navigation>
