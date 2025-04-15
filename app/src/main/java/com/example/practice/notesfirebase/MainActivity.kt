@@ -1,5 +1,6 @@
 package com.example.practice.notesfirebase
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -13,24 +14,21 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.practice.notesfirebase.databinding.ActivityMainBinding
+import com.example.practice.notesfirebase.home.HomeFragmentListener
 import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager.getLoadTheData
 import com.example.practice.notesfirebase.util.splitGetFirstString
 import com.example.practice.notesfirebase.util.toastMessage
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
-import com.google.firebase.Firebase
-import com.google.firebase.appdistribution.InterruptionLevel
-import com.google.firebase.appdistribution.appDistribution
 
+class MainActivity : AppCompatActivity() , HomeFragmentListener {
+    private lateinit var mainBinding : ActivityMainBinding
+    private lateinit var navController : NavController
+    private lateinit var bottomNavView : BottomNavigationView
+    private lateinit var drawerLayout : DrawerLayout
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var mainBinding: ActivityMainBinding
-    private lateinit var navController: NavController
-    private lateinit var bottomNavView: BottomNavigationView
-    private lateinit var drawerLayout: DrawerLayout
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
@@ -39,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mainBinding.toolbar)
 
         val result = getLoadTheData(this)
-        Log.d("TAG", "Result from getLoadTheData: $result")
-        val (userEmail, userPassword) = result ?: let {
-            Log.d("TAG", "onViewCreated: Data is null, using default values.")
-            return@let Pair("defaultEmail@example.com", "defaultPassword")
+        Log.d("TAG" , "Result from getLoadTheData: $result")
+        val (userEmail , userPassword) = result ?: let {
+            Log.d("TAG" , "onViewCreated: Data is null, using default values.")
+            return@let Pair("defaultEmail@example.com" , "defaultPassword")
         }
         // Initialize NavHostFragment and NavController
         val navHostFragment =
@@ -51,46 +49,60 @@ class MainActivity : AppCompatActivity() {
 
         // Setup Bottom Navigation
         bottomNavView = findViewById(R.id.bottom_navigation)
-        NavigationUI.setupWithNavController(bottomNavView, navController)
+        NavigationUI.setupWithNavController(bottomNavView , navController)
 
         // Use OnBackPressedDispatcher to handle back press
         onBackPressedDispatcher.addCallback(this@MainActivity) {
             // Custom back press handling
             if (navController.currentDestination?.id == R.id.homeFragment) {
                 // If already on the HomeFragment, exit the activity or handle it accordingly
-                Log.d("MainActivity", "Back pressed on HomeFragment")
+                Log.d("MainActivity" , "Back pressed on HomeFragment")
                 finish() // Exit the activity or do something else (e.g. show confirmation)
             } else {
                 // Navigate to HomeFragment when back button is pressed
-                bottomNavView.selectedItemId = R.id.nav_home // Ensure Home Fragment is selected in Bottom Navigation
-                navController.popBackStack(R.id.homeFragment, false) // Navigate to home fragment
+                bottomNavView.selectedItemId =
+                    R.id.nav_home // Ensure Home Fragment is selected in Bottom Navigation
+                navController.popBackStack(R.id.homeFragment , false) // Navigate to home fragment
             }
         }
 
         // Setup Navigation Drawer
         drawerLayout = findViewById(R.id.drawerLayout)
-        val navigationView: NavigationView = findViewById(R.id.navigation_drawer)
-        NavigationUI.setupWithNavController(navigationView, navController)
+        val navigationView : NavigationView = findViewById(R.id.navigation_drawer)
+        NavigationUI.setupWithNavController(navigationView , navController)
         val view = navigationView.getHeaderView(0)
         val userNameNew = view.findViewById<MaterialTextView>(R.id.user_name)
         val userEmailNew = view.findViewById<MaterialTextView>(R.id.user_email)
         val appVersion = view.findViewById<MaterialTextView>(R.id.nav_version)
-        if (userEmail!=null){
+        if (userEmail != null) {
             userEmailNew.text = userEmail
-            userNameNew.text = "Hello ${splitGetFirstString(userEmail ,"@")}"
-            val versionName = "1.0" //BuildConfig.VERSION_NAME  // Get the version name from BuildConfig
+            userNameNew.text = "Hello ${splitGetFirstString(userEmail , "@")}"
+            //    val versionName = BuildConfig.VERSION_NAME  // Get the version name from BuildConfig
+            val versionName = try {
+                val packageInfo = applicationContext.packageManager.getPackageInfo(
+                        applicationContext.packageName ,
+                        0
+                                                                                  )
+                packageInfo.versionName
+            } catch (e : PackageManager.NameNotFoundException) {
+                e.printStackTrace()
+                "Unknown" // Default value in case of error
+            }
+            Log.d("TAG" , "versionName: $versionName")
             appVersion.text = "App Version : $versionName"
         }
 
-        val mDrawerToggle = ActionBarDrawerToggle(this, drawerLayout,
-                mainBinding.toolbar,R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close)
+        val mDrawerToggle = ActionBarDrawerToggle(
+                this , drawerLayout ,
+                mainBinding.toolbar , R.string.navigation_drawer_open ,
+                R.string.navigation_drawer_close
+                                                 )
         drawerLayout.setDrawerListener(mDrawerToggle)
         mDrawerToggle.syncState()
         drawerLayout.closeDrawers()
 
         // Set up ActionBar with NavController
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        NavigationUI.setupActionBarWithNavController(this , navController , drawerLayout)
 
         // Handle navigation item selections in the NavigationView
         navigationView.setNavigationItemSelectedListener { menuItem ->
@@ -100,12 +112,7 @@ class MainActivity : AppCompatActivity() {
                     drawerLayout.closeDrawers()
                     true
                 }
-                R.id.nav_logout -> {
-                    // Handle logout
-                    openLogoutDialog() //need to clear the SharedPreference Data.....
-                    drawerLayout.closeDrawers()
-                    true
-                }
+
                 else -> false
             }
         }
@@ -115,10 +122,12 @@ class MainActivity : AppCompatActivity() {
                     //replaceFragment(HomeFragment())
                     navController.navigate(R.id.homeFragment)
                 }
+
                 R.id.nav_saved -> {
-                   // replaceFragment(SavedFragment())
+                    // replaceFragment(SavedFragment())
                     navController.navigate(R.id.savedFragment)
                 }
+
                 R.id.nav_deleted -> {
                     //replaceFragment(DeletedFragment())
                     navController.navigate(R.id.deletedFragment)
@@ -129,46 +138,58 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openLogoutDialog() {
-        toastMessage(this,"Logout")
+        toastMessage(this , "Logout")
     }
 
-    override fun onSupportNavigateUp(): Boolean {
+    override fun onSupportNavigateUp() : Boolean {
         // Handle navigation when the up button is pressed
-        return NavigationUI.navigateUp(navController, drawerLayout) || super.onSupportNavigateUp()
+        return NavigationUI.navigateUp(navController , drawerLayout) || super.onSupportNavigateUp()
     }
-    fun hideTheToolBar(visibility : Int){
-        if (visibility == View.VISIBLE){
-           mainBinding.toolbar.visibility = View.VISIBLE
-        }else{
+
+    fun hideTheToolBar(visibility : Int) {
+        if (visibility == View.VISIBLE) {
+            mainBinding.toolbar.visibility = View.VISIBLE
+        } else {
             mainBinding.toolbar.visibility = View.GONE
         }
     }
-    fun hideBottomNavigationView(visibility : Int){
-        if (visibility == View.VISIBLE){
+
+    fun hideBottomNavigationView(visibility : Int) {
+        if (visibility == View.VISIBLE) {
             mainBinding.bottomNavigation.visibility = View.VISIBLE
-        }else{
+        } else {
             mainBinding.bottomNavigation.visibility = View.GONE
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item : MenuItem) : Boolean {
         // Handle your menu items here first
         when (item.itemId) {
             R.id.ivSearch -> {
                 navController.navigate(R.id.searchFragment) // Navigate to searchFragment
                 return true // Indicate the action was handled
             }
+
             else -> {
                 return super.onOptionsItemSelected(item) // Delegate other cases to the super class
             }
         }
     }
-     private fun replaceFragment(someFragment: Fragment) {
+
+    private fun replaceFragment(someFragment : Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.nav_host_fragment , someFragment)
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(null)
         transaction.commit()
     }
 
+    override fun updateDrawerData(email : String , versionName : String) {
+        val navHeader = mainBinding.navigationDrawer.getHeaderView(0)
+        navHeader.findViewById<MaterialTextView>(R.id.user_email).text = email
+        navHeader.findViewById<MaterialTextView>(R.id.user_name).text =
+            "Hello ${splitGetFirstString(email , "@")}"
+        navHeader.findViewById<MaterialTextView>(R.id.nav_version).text =
+            "App Version : $versionName"
+    }
 
 }

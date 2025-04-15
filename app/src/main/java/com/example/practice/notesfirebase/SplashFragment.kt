@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class SplashFragment : Fragment() {
     private lateinit var splashBinding : FragmentSplashBinding
@@ -31,6 +32,9 @@ class SplashFragment : Fragment() {
     }
 
     private fun checkAlreadyLogInOrNot() {
+        val email = "defaultEmail".trim().lowercase(Locale.ROOT) + "@gmail.com"
+        Log.d("TAG" , "checkAlreadyLogInOrNot: $email")
+
         val (userEmail , userPassword) = getLoadTheData(requireContext())
             ?: Pair("defaultEmail@example.com" , "defaultPassword")
         Log.d("TAG" , "splash: $userEmail")
@@ -40,7 +44,7 @@ class SplashFragment : Fragment() {
             val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.splashFragment, true) // Adjust the startFragment ID to where you want to pop up to.
                     .build()
-            if (userEmail == null) {
+            if (userEmail == "defaultEmail@example.com" || userEmail == null) {
                 findNavController().navigate(R.id.welcomeFragment,null,navOptions)
             } else {
                 findNavController().navigate(R.id.homeFragment,null,navOptions)

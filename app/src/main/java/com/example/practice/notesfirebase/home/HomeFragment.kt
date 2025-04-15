@@ -1,5 +1,6 @@
 package com.example.practice.notesfirebase.home
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -49,6 +50,15 @@ class HomeFragment : Fragment() {
             email = userEmail
             fetchAllUserDataALL(email)
             Progress.show(requireContext())
+            val versionName = try {
+                val packageInfo = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+                packageInfo.versionName
+            } catch (e: PackageManager.NameNotFoundException) {
+                e.printStackTrace()
+                "Unknown" // Default value in case of error
+            }
+            (activity as? HomeFragmentListener)?.updateDrawerData(email,versionName)
+
         }
         activity?.let {
             val actionBar = (it as AppCompatActivity).supportActionBar

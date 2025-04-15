@@ -13,6 +13,7 @@ import com.example.practice.notesfirebase.databinding.FragmentWelcomeBinding
 import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager.insertAndSaveData
 import com.example.practice.notesfirebase.util.Progress
 import com.google.firebase.auth.FirebaseAuth
+import java.util.Locale
 
 class WelcomeFragment : Fragment() {
     private lateinit var welcomeBinding: FragmentWelcomeBinding
@@ -29,10 +30,11 @@ class WelcomeFragment : Fragment() {
         // Set the listener for the "Get Started" button
         welcomeBinding.btnGetStarted.setOnClickListener {
             Progress.show(requireContext())
-            val email = welcomeBinding.etCustomName.text.toString() + "@gmail.com"
-            val password = "userPassword"// Get the actual password input from the user
+            val email = welcomeBinding.etCustomName.text.toString().trim().lowercase(Locale.ROOT) + "@gmail.com"
+            val password = "userPassword"//hardcoded Password For All Users
             if (validateInputs(email, password)) {
-                handleEmailCheckResult(email, password)
+               // handleEmailCheckResult(email, password)
+                registerUser(email, password)
             } else {
                 Progress.dismiss()
             }
@@ -54,7 +56,7 @@ class WelcomeFragment : Fragment() {
             if (exists) {
                 Toast.makeText(requireContext(), "Email exists, proceeding to login", Toast.LENGTH_SHORT).show()
                 // Perform login if email exists
-                loginUser(email, password)
+                registerUser(email, password)
             } else {
                 Toast.makeText(requireContext(), "Email not found, please register", Toast.LENGTH_SHORT).show()
                 // Perform registration if email does not exist

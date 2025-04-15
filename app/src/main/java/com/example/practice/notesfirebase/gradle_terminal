@@ -1,0 +1,51 @@
+
+---Using In Terminal
+
+🔄 Build Commands
+
+./gradlew assembleDebug         # Build debug APK
+./gradlew assembleRelease       # Build release APK
+./gradlew build                 # Build entire project (debug + release)
+./gradlew clean                 # Clean build folder
+./gradlew cleanBuildCache       # Clear build cache
+
+
+📱 Install & Run App
+
+./gradlew installDebug          # Install debug APK on connected device/emulator
+./gradlew uninstallAll          # Uninstall all variants
+
+
+🧪 Testing
+
+./gradlew test                  # Run unit tests (local JVM tests)
+./gradlew connectedAndroidTest  # Run instrumented tests on device/emulator
+
+
+🔍 Lint & Checks
+
+./gradlew lint                  # Run Android Lint checks
+./gradlew lintDebug             # Lint only debug variant
+./gradlew check                 # Run all verification tasks (unit test, lint, etc.)
+
+🧩 Dependencies
+
+./gradlew dependencies          # Show project dependencies (can be specific like ":app:dependencies")
+
+🧰 Kotlin-Specific
+./gradlew kaptKotlin            # Run annotation processors (if using kapt)
+./gradlew kotlinCompileDebug    # Compile Kotlin sources for debug
+./gradlew kotlinCompileRelease  # Compile Kotlin sources for release
+
+🧠 View All Tasks
+./gradlew tasks                 # Lists all available Gradle tasks
+
+Or, for a specific module:
+./gradlew :app:tasks            # Tasks for the app module
+
+💡 Tips:
+./gradlew build --info
+
+Run multiple tasks together:
+./gradlew clean assembleDebug
+

@@ -15,7 +15,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 2
-        versionName = "1.1"
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,6 +27,10 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
                          )
+            //JKS FILE PATH - C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks
+            //key store pass - android
+            //alis - android
+            //pass - android
         }
     }
 

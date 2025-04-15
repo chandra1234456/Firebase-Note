@@ -22,12 +22,18 @@ class FeedBackFragment : Fragment() {
         savedInstanceState : Bundle? ,
                              ) : View {
         feedBackBinding = FragmentFeedBackBinding.inflate(layoutInflater)
+        findNavController().navigate(R.id.homeFragment)
+        return feedBackBinding.root
+
+    }
+
+    override fun onViewCreated(view : View , savedInstanceState : Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
         firebaseFireStore = FirebaseFirestore.getInstance()
         /**
          * Default Code  if u write code mainActivity it will affect all Fragments  if u write particular fragment  it will automatically u will get Notification
          * This Will Be The Notification for Feedback ..then Click on That Notification..it will redirect the feed back Thing
          */
-
         /*  Firebase.appDistribution.showFeedbackNotification(
                   // Text providing notice to your testers about collection and
                   // processing of their feedback data
@@ -38,10 +44,8 @@ class FeedBackFragment : Fragment() {
                 .setNavigationOnClickListener {
                     findNavController().navigate(R.id.homeFragment)
                 }
-        //This For Custom Notification In Particular Fragment
-        Firebase.appDistribution.startFeedback("Please Write Ur Feedback and Comments!!")
-        return feedBackBinding.root
-
+        //This For Custom FeedBack Notification In Particular Fragment
+        Firebase.appDistribution.startFeedback("Please Share Your Feedback !!")
     }
 
 

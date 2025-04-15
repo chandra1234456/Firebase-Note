@@ -12,8 +12,9 @@
  - Firebase
 
  ## Features
- - Firebase
+ - Firebase https://firebase.google.com/
  - Google Cloud Tester Api Enabled https://console.cloud.google.com/
  - Firebase Authentication
  - Firebase Storage
  - Firebase App Distribution
+ - Firebase TestLabs
