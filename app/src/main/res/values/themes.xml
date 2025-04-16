@@ -19,4 +19,20 @@
         <item name="android:windowFullscreen" tools:targetApi="m">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+
+    <style name="AppTheme.DayNight" parent="Theme.Material3.DayNight">
+        <!-- You MUST define these for Material themes -->
+        <item name="colorPrimary">#FF6200EE</item>
+        <item name="colorPrimaryVariant">#FF3700B3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#FF03DAC5</item>
+        <item name="colorOnSecondary">#000000</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- Optional: status bar, background, etc. -->
+     <!--   <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>-->
+       <!-- <item name="android:windowBackground">?android:colorBackground</item>-->
+    </style>
 </resources>

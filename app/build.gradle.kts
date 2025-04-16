@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services) // Make sure to add this line if using version catalog
-    id("com.google.firebase.crashlytics") //Firebase Crashalytics
-    id("com.google.firebase.appdistribution") //Firebase Appdistribution not Required
+    id("com.google.firebase.crashlytics") //Firebase Crashlytics
+    id("com.google.firebase.appdistribution") //Firebase App Distribution not Required
 }
 
 android {
@@ -15,7 +15,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 2
-        versionName = "1.2"
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -23,6 +23,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = false
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -31,6 +33,13 @@ android {
             //key store pass - android
             //alis - android
             //pass - android
+        }
+        debug {
+            isDebuggable = true
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                         )
         }
     }
 

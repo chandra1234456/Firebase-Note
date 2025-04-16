@@ -62,12 +62,12 @@
     <fragment
         android:id="@+id/deletedFragment"
         android:name="com.example.practice.notesfirebase.DeletedFragment"
-        android:label="Deleted"
+        android:label="Deleted Items"
         tools:layout="@layout/fragment_deleted" />
     <fragment
         android:id="@+id/savedFragment"
         android:name="com.example.practice.notesfirebase.SavedFragment"
-        android:label="Saved"
+        android:label="Saved Items"
         tools:layout="@layout/fragment_saved" />
     <fragment
         android:id="@+id/feedBackFragment"

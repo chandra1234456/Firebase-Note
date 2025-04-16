@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
         }
         activity?.let {
             val actionBar = (it as AppCompatActivity).supportActionBar
-            actionBar?.title = "Home"
+            actionBar?.title = "DashBoard"
             actionBar?.setDisplayHomeAsUpEnabled(true)  // Hide the back arrow
             actionBar?.setHomeAsUpIndicator(R.drawable.ic_menu) // Set a custom icon if needed
         }
