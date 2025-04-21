@@ -23,13 +23,22 @@ android {
     // ✅ Signing config for release
     signingConfigs {
         create("release") {
-            //Added in Github Secreates
-            val keystorePath = System.getenv("KEYSTORE_FILE")
-            if (keystorePath != null) {
-                storeFile = file(keystorePath)
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
+            //Added in Github Secretes
+            val storeFilePath = System.getenv("KEYSTORE_FILE")
+            val storePwd = System.getenv("KEYSTORE_PASSWORD")
+            val keyAliasVal = System.getenv("KEY_ALIAS")
+            val keyPwd = System.getenv("KEY_PASSWORD")
+            if (!storeFilePath.isNullOrBlank() &&
+                !storePwd.isNullOrBlank() &&
+                !keyAliasVal.isNullOrBlank() &&
+                !keyPwd.isNullOrBlank()) {
+
+                storeFile = file(storeFilePath)
+                storePassword = storePwd
+                keyAlias = keyAliasVal
+                keyPassword = keyPwd
+            } else {
+                println("⚠️ SigningConfig not set: missing environment variables.")
             }
         }
     }

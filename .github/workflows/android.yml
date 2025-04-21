@@ -11,47 +11,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code from the repo
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
 
-      # Make Gradle executable
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
+      # ✅ Decode Keystore and Export All Required Variables
       # Download Keystore securely using Base64 (assuming you uploaded it as a GitHub Secret)
-      # To Get Base64 path File Run Your Jks File In powerShell  My Path ([Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")) > C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.b64)
-      - name: Decode Keystore from Base64
+      # To Get Base64 path File Run Your Jks File In powerShell
+      # My Path ([Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")) > C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.b64)
+      - name: Decode Keystore and Set Signing Env Vars
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-release-key.keystore
           echo "KEYSTORE_FILE=$PWD/my-release-key.keystore" >> $GITHUB_ENV
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      # ✅ Build Debug and Release APKs
+      # ✅ Build APKs
       - name: Build Debug and Release APKs
         run: |
           ./gradlew assembleDebug
           ./gradlew assembleRelease
-          
-       # Upload Debug APK
+
+      # ✅ Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      # Upload APK as an artifact
-      - name: Upload APK (artifact)
+      # ✅ Release APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
