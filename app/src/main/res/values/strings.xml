@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Note</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_drawer_open">OPEN\n</string>
+    <string name="navigation_drawer_close">CLOSE</string>
+
+    <string name="toast_enter_email">Please Enter Your Email</string>
+    <string name="toast_enter_password">Please Enter Your Password</string>
+    <string name="toast_invalid_email">Please Enter a Valid Email</string>
+    <string name="toast_login_success">Login Successful</string>
+    <string name="toast_login_failed">Login Failed: %1$s</string>
+    <string name="toast_registration_success">Registration Successful</string>
+    <string name="toast_registration_failed">Registration Failed: %1$s</string>
+    <string name="toast_email_in_use">Email already in use, proceeding to login</string>
+    <string name="toast_email_not_found">Email not found, please register</string>
+
+
+</resources>

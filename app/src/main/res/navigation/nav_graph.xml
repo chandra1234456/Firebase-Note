@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="com.example.practice.notesfirebase.addNote.AddNoteFragment"
+        android:label="Create Note"
+        tools:layout="@layout/fragment_add_note" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.practice.notesfirebase.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_addNoteFragment"
+            app:destination="@id/addNoteFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_deletedFragment"
+            app:destination="@id/deletedFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_savedFragment"
+            app:destination="@id/savedFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_feedBackFragment"
+            app:destination="@id/feedBackFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.practice.notesfirebase.SplashFragment"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_loginSignUpFragment"
+            app:destination="@id/loginSignUpFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginSignUpFragment"
+        android:name="com.example.practice.notesfirebase.LoginSignUpFragment"
+        tools:layout="@layout/fragment_login_sign_up" >
+        <action
+            android:id="@+id/action_loginSignUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.practice.notesfirebase.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.practice.notesfirebase.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome" />
+    <fragment
+        android:id="@+id/deletedFragment"
+        android:name="com.example.practice.notesfirebase.DeletedFragment"
+        android:label="Deleted Items"
+        tools:layout="@layout/fragment_deleted" />
+    <fragment
+        android:id="@+id/savedFragment"
+        android:name="com.example.practice.notesfirebase.SavedFragment"
+        android:label="Saved Items"
+        tools:layout="@layout/fragment_saved" />
+    <fragment
+        android:id="@+id/feedBackFragment"
+        android:name="com.example.practice.notesfirebase.feedback.FeedBackFragment"
+        android:label="FeedBack"
+        tools:layout="@layout/fragment_feed_back" />
+</navigation>
