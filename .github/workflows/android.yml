@@ -2,9 +2,9 @@ name: Android CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -23,11 +23,17 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
+      - name: Download Keystore
+        run: |
+          curl -L -o my-release-key.keystore "YOUR-KEYSTORE-URL" //Keystore file path
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
 
       - name: Upload APK (artifact)
-        uses: actions/upload-artifact@v4   # ✅ Updated version
+        uses: actions/upload-artifact@v4
         with:
-          name: app-debug.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
