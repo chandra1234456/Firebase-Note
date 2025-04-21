@@ -11,27 +11,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout code from the repo
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
 
+      # Make Gradle executable
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Download Keystore
+      # Download Keystore securely using Base64 (assuming you uploaded it as a GitHub Secret)
+      - name: Decode Keystore from Base64
         run: |
-          curl -L -o my-release-key.keystore "YOUR-KEYSTORE-URL" //Keystore file path
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-release-key.keystore
+          echo "KEYSTORE_FILE=$PWD/my-release-key.keystore" >> $GITHUB_ENV
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      # Build the release APK
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
+      # Upload APK as an artifact
       - name: Upload APK (artifact)
         uses: actions/upload-artifact@v4
         with:
