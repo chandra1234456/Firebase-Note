@@ -2,9 +2,9 @@ name: Android CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -27,6 +27,7 @@ jobs:
         run: chmod +x ./gradlew
 
       # Download Keystore securely using Base64 (assuming you uploaded it as a GitHub Secret)
+      # To Get Base64 path File Run Your Jks File In powerShell  My Path ([Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")) > C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.b64)
       - name: Decode Keystore from Base64
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-release-key.keystore
@@ -36,9 +37,18 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      # Build the release APK
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
+      # ✅ Build Debug and Release APKs
+      - name: Build Debug and Release APKs
+        run: |
+          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+          
+       # Upload Debug APK
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
 
       # Upload APK as an artifact
       - name: Upload APK (artifact)
