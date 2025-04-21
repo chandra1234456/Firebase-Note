@@ -44,6 +44,8 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
                          )
+            //JKS FILE PATH - C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks
+
         }
 
         getByName("debug") {
