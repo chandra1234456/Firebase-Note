@@ -23,45 +23,48 @@ android {
 
     signingConfigs {
         // Reusable signing config logic
-        fun applySigningConfig(config: SigningConfig, name: String) {
-            /*val storeFileBase64Path = System.getenv("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")
+        fun applySigningConfig(config: SigningConfig, name: String,boolean: Boolean) {
+            if (boolean) {
+                /*val storeFileBase64Path = System.getenv("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")
             val storeFilePath = System.getenv("KEYSTORE_FILE")
             val storePwd = System.getenv("KEYSTORE_PASSWORD")
             val keyAliasVal = System.getenv("KEY_ALIAS")
             val keyPwd = System.getenv("KEY_PASSWORD")*/
-           // val storeFilePath = System.getenv("KEYSTORE_FILE")
-           val storeFilePath = "NotesFirebase\\.gradle\\notefirebase.jks"
-            val storePwd = "android"
-            val keyAliasVal = "android"
-            val keyPwd = "android"
+                // val storeFilePath = System.getenv("KEYSTORE_FILE")
+                val storeFilePath = "NotesFirebase\\.gradle\\notefirebase.jks"
+                val storePwd = "android"
+                val keyAliasVal = "android"
+                val keyPwd = "android"
 
-           // println("🔐 [$name] KEYSTORE_BASE64 = $storeFileBase64Path")
-            println("🔐 [$name] KEYSTORE_FILE = $storeFilePath")
-            println("🔐 [$name] KEYSTORE_PASSWORD is set? ${!storePwd.isNullOrBlank()}")
-            println("🔐 [$name] KEY_ALIAS is set? ${!keyAliasVal.isNullOrBlank()}")
-            println("🔐 [$name] KEY_PASSWORD is set? ${!keyPwd.isNullOrBlank()}")
+                // println("🔐 [$name] KEYSTORE_BASE64 = $storeFileBase64Path")
+                println("🔐 [$name] KEYSTORE_FILE = $storeFilePath")
+                println("🔐 [$name] KEYSTORE_PASSWORD is set? ${! storePwd.isNullOrBlank()}")
+                println("🔐 [$name] KEY_ALIAS is set? ${! keyAliasVal.isNullOrBlank()}")
+                println("🔐 [$name] KEY_PASSWORD is set? ${! keyPwd.isNullOrBlank()}")
 
-            if (!storeFilePath.isNullOrBlank() &&
-                !storePwd.isNullOrBlank() &&
-                !keyAliasVal.isNullOrBlank() &&
-                !keyPwd.isNullOrBlank()) {
-               config.storeFile = file(storeFilePath)
-                   // rootProject.file(storeFilePath)
-                config.storePassword = storePwd
-                println("🔐 [$name] rootProject = ${config.storeFile}")
-                config.keyAlias = keyAliasVal
-                config.keyPassword = keyPwd
-            } else {
-                println("⚠️ [$name] SigningConfig not set: missing environment variables.")
+                if (! storeFilePath.isNullOrBlank() &&
+                    ! storePwd.isNullOrBlank() &&
+                    ! keyAliasVal.isNullOrBlank() &&
+                    ! keyPwd.isNullOrBlank()
+                ) {
+                    config.storeFile = file(storeFilePath)
+                    // rootProject.file(storeFilePath)
+                    config.storePassword = storePwd
+                    println("🔐 [$name] rootProject = ${config.storeFile}")
+                    config.keyAlias = keyAliasVal
+                    config.keyPassword = keyPwd
+                } else {
+                    println("⚠️ [$name] SigningConfig not set: missing environment variables.")
+                }
             }
         }
 
         create("release") {
-            applySigningConfig(this, "release")
+            applySigningConfig(this, "release",true)
         }
 
         getByName("debug") {
-            applySigningConfig(this, "debug")
+            applySigningConfig(this, "debug",false)
         }
     }
 
