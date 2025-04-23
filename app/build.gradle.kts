@@ -31,7 +31,7 @@ android {
             val keyAliasVal = System.getenv("KEY_ALIAS")
             val keyPwd = System.getenv("KEY_PASSWORD")*/
                 // val storeFilePath = System.getenv("KEYSTORE_FILE")
-                val storeFilePath = "NotesFirebase\\.gradle\\notefirebase.jks"
+                val storeFilePath = "notefirebase.jks"
                 val storePwd = "android"
                 val keyAliasVal = "android"
                 val keyPwd = "android"
