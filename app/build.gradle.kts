@@ -36,13 +36,19 @@ android {
                 val keyAliasVal = "android"
                 val keyPwd = "android"
 
+                config.storeFile = rootProject.file(storeFilePath)
+                config.storePassword = "android"
+                println("🔐 [$name] rootProject = ${config.storeFile}")
+                config.keyAlias = "android"
+                config.keyPassword = "android"
+
                 // println("🔐 [$name] KEYSTORE_BASE64 = $storeFileBase64Path")
                 println("🔐 [$name] KEYSTORE_FILE = $storeFilePath")
                 println("🔐 [$name] KEYSTORE_PASSWORD is set? ${! storePwd.isNullOrBlank()}")
                 println("🔐 [$name] KEY_ALIAS is set? ${! keyAliasVal.isNullOrBlank()}")
                 println("🔐 [$name] KEY_PASSWORD is set? ${! keyPwd.isNullOrBlank()}")
 
-                if (! storeFilePath.isNullOrBlank() &&
+                /*if (! storeFilePath.isNullOrBlank() &&
                     ! storePwd.isNullOrBlank() &&
                     ! keyAliasVal.isNullOrBlank() &&
                     ! keyPwd.isNullOrBlank()
@@ -55,7 +61,7 @@ android {
                     config.keyPassword = keyPwd
                 } else {
                     println("⚠️ [$name] SigningConfig not set: missing environment variables.")
-                }
+                }*/
             }
         }
 

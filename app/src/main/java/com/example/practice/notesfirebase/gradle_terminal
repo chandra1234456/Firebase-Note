@@ -8,6 +8,7 @@
 ./gradlew build                 # Build entire project (debug + release)
 ./gradlew clean                 # Clean build folder
 ./gradlew cleanBuildCache       # Clear build cache
+./gradlew signingReport         # singing Details
 
 
 📱 Install & Run App
