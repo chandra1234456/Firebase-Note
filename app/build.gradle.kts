@@ -44,8 +44,10 @@ android {
                 !storePwd.isNullOrBlank() &&
                 !keyAliasVal.isNullOrBlank() &&
                 !keyPwd.isNullOrBlank()) {
-                config.storeFile = file(storeFilePath)
+               // config.storeFile = file(storeFilePath)
+                config.storeFile = rootProject.file(storeFilePath)
                 config.storePassword = storePwd
+                println("🔐 [$name] rootProject = ${config.storeFile}")
                 config.keyAlias = keyAliasVal
                 config.keyPassword = keyPwd
             } else {
