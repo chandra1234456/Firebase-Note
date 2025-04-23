@@ -25,6 +25,7 @@ android {
         create("release") {
             //Added in Github Secretes
             val storeFilePath = System.getenv("KEYSTORE_FILE")
+            println("KEYSTORE_FILE = ${System.getenv("KEYSTORE_FILE")}")
             val storePwd = System.getenv("KEYSTORE_PASSWORD")
             val keyAliasVal = System.getenv("KEY_ALIAS")
             val keyPwd = System.getenv("KEY_PASSWORD")
