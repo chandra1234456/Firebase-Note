@@ -11,18 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ✅ Checkout Code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # ✅ Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
-            - name: Make Gradle executable
-              run: chmod +x ./gradlew
 
+      # ✅ Make Gradle Executable
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
 
+      # ✅ Decode Keystore and Set Signing Env Vars
       # ✅ Decode Keystore and Export All Required Variables
       # Download Keystore securely using Base64 (assuming you uploaded it as a GitHub Secret)
       # To Get Base64 path File Run Your Jks File In powerShell
@@ -30,11 +34,10 @@ jobs:
       - name: Decode Keystore and Set Signing Env Vars
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > notefirebase.jks
-          echo "KEYSTORE_FILE=notefirebase.jks" >> $GITHUB_ENV
+          echo "KEYSTORE_FILE = notefirebase.jks" >> $GITHUB_ENV
           echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
-
 
       # ✅ Build APKs
       - name: Build Debug and Release APKs
@@ -42,14 +45,14 @@ jobs:
           ./gradlew assembleDebug
           ./gradlew assembleRelease
 
-      # ✅ Debug APK
+      # ✅ Upload Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      # ✅ Release APK
+      # ✅ Upload Release APK
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
