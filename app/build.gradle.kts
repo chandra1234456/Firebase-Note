@@ -1,9 +1,11 @@
+import com.android.build.api.dsl.SigningConfig
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services) // Firebase Analytics
-    id("com.google.firebase.crashlytics") // Firebase Crashlytics
-    id("com.google.firebase.appdistribution") // Firebase App Distribution (optional)
+    alias(libs.plugins.google.services)
+    id("com.google.firebase.crashlytics")
+    id("com.google.firebase.appdistribution")
 }
 
 android {
@@ -16,31 +18,43 @@ android {
         targetSdk = 34
         versionCode = 2
         versionName = "1.3"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ✅ Signing config for release
     signingConfigs {
-        create("release") {
-            //Added in Github Secretes
+        // Reusable signing config logic
+        fun applySigningConfig(config: SigningConfig, name: String) {
+            val storeFileBase64Path = System.getenv("KEYSTORE_BASE64")
             val storeFilePath = System.getenv("KEYSTORE_FILE")
-            println("KEYSTORE_FILE = ${System.getenv("KEYSTORE_FILE")}")
             val storePwd = System.getenv("KEYSTORE_PASSWORD")
             val keyAliasVal = System.getenv("KEY_ALIAS")
             val keyPwd = System.getenv("KEY_PASSWORD")
+
+            println("🔐 [$name] KEYSTORE_BASE64 = $storeFileBase64Path")
+            println("🔐 [$name] KEYSTORE_FILE = $storeFilePath")
+            println("🔐 [$name] KEYSTORE_PASSWORD is set? ${!storePwd.isNullOrBlank()}")
+            println("🔐 [$name] KEY_ALIAS is set? ${!keyAliasVal.isNullOrBlank()}")
+            println("🔐 [$name] KEY_PASSWORD is set? ${!keyPwd.isNullOrBlank()}")
+
             if (!storeFilePath.isNullOrBlank() &&
                 !storePwd.isNullOrBlank() &&
                 !keyAliasVal.isNullOrBlank() &&
                 !keyPwd.isNullOrBlank()) {
-
-                storeFile = file(storeFilePath)
-                storePassword = storePwd
-                keyAlias = keyAliasVal
-                keyPassword = keyPwd
+                config.storeFile = file(storeFilePath)
+                config.storePassword = storePwd
+                config.keyAlias = keyAliasVal
+                config.keyPassword = keyPwd
             } else {
-                println("⚠️ SigningConfig not set: missing environment variables.")
+                println("⚠️ [$name] SigningConfig not set: missing environment variables.")
             }
+        }
+
+        create("release") {
+            applySigningConfig(this, "release")
+        }
+
+        getByName("debug") {
+            applySigningConfig(this, "debug")
         }
     }
 
@@ -54,11 +68,10 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
                          )
-            //JKS FILE PATH - C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks
-
         }
 
         getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug") // Optional for debug
             isDebuggable = true
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -97,7 +110,7 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.google.firebase.auth.ktx)
 
-    // Firebase App Distribution (optional for tester feedback)
+    // Firebase App Distribution
     implementation("com.google.firebase:firebase-appdistribution-api-ktx:16.0.0-beta15")
     implementation("com.google.firebase:firebase-appdistribution:16.0.0-beta15")
 

@@ -49,3 +49,44 @@ Or, for a specific module:
 Run multiple tasks together:
 ./gradlew clean assembleDebug
 
+
+# CI/CD Release & Debug Save Env Variables
+✅ For Git Bash on Windows
+1. Open Git Bash
+You can find Git Bash in your Start menu.
+
+2. Open or Create Your Bash Profile
+Run this command to open the config file:
+--nano ~/.bash_profile
+
+If that file doesn't exist, this command will create it.
+
+3. Add Your Environment Variables
+Paste this into the file (edit the paths and secrets!):
+
+//Using One
+export KEYSTORE_FILE="/c/Users/balachandra.d/private/NotesFirebase/.gradle/notefirebase.jks"
+export KEYSTORE_PASSWORD="your_keystore_password"
+export KEY_ALIAS="your_key_alias"
+export KEY_PASSWORD="your_key_password"
+💡 Tip: Use /c/Users/... format for Windows paths in Git Bash.
+
+4. Save and Exit
+In nano:
+
+Press Ctrl + O to save
+
+Press Enter
+
+Press Ctrl + X to exit
+
+5. Apply Changes
+Run this to activate the new settings immediately:
+
+--source ~/.bash_profile
+6. Verify They're Set
+You can check with:
+
+echo $KEYSTORE_FILE
+echo $KEYSTORE_PASSWORD
+
