@@ -29,7 +29,8 @@ android {
             val storePwd = System.getenv("KEYSTORE_PASSWORD")
             val keyAliasVal = System.getenv("KEY_ALIAS")
             val keyPwd = System.getenv("KEY_PASSWORD")*/
-            val storeFilePath = "C:\\Users\\balachandra.d\\private\\NotesFirebase\\.gradle\\notefirebase.jks"
+           // val storeFilePath = System.getenv("KEYSTORE_FILE")
+           val storeFilePath = "NotesFirebase\\.gradle\\notefirebase.jks"
             val storePwd = "android"
             val keyAliasVal = "android"
             val keyPwd = "android"
@@ -44,8 +45,8 @@ android {
                 !storePwd.isNullOrBlank() &&
                 !keyAliasVal.isNullOrBlank() &&
                 !keyPwd.isNullOrBlank()) {
-               // config.storeFile = file(storeFilePath)
-                config.storeFile = rootProject.file(storeFilePath)
+               config.storeFile = file(storeFilePath)
+                   // rootProject.file(storeFilePath)
                 config.storePassword = storePwd
                 println("🔐 [$name] rootProject = ${config.storeFile}")
                 config.keyAlias = keyAliasVal
