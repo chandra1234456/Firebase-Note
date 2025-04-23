@@ -19,18 +19,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+            - name: Make Gradle executable
+              run: chmod +x ./gradlew
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
-          
-          
-          #This One For Debug The Env Variables
-               - name: Debug environment variables
-               run: |
-                 echo "KEYSTORE_FILE=$KEYSTORE_FILE"
-                 echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" | sed 's/./*/g'
-                 echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" | sed 's/./*/g'
-                 echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" | sed 's/./*/g'
 
       # ✅ Decode Keystore and Export All Required Variables
       # Download Keystore securely using Base64 (assuming you uploaded it as a GitHub Secret)
