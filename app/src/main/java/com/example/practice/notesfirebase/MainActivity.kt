@@ -1,11 +1,17 @@
 package com.example.practice.notesfirebase
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -21,20 +27,51 @@ import com.example.practice.notesfirebase.util.toastMessage
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() , HomeFragmentListener {
     private lateinit var mainBinding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var bottomNavView : BottomNavigationView
     private lateinit var drawerLayout : DrawerLayout
+    private lateinit var logoutReceiver : BroadcastReceiver
+      private lateinit var analytics: FirebaseAnalytics
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
+        // Obtain the FirebaseAnalytics instance.
+         analytics = com.google.firebase.Firebase.analytics
+         val bundle = Bundle().apply {
+             putString(FirebaseAnalytics.Param.ITEM_ID, "id123")
+             putString(FirebaseAnalytics.Param.ITEM_NAME, "My Item")
+             putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
+         }
+
+          analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+
+        // Obtain the FirebaseAnalytics instance.
         // throw RuntimeException("Test Crash")
         // Set up the Toolbar as ActionBar
         setSupportActionBar(mainBinding.toolbar)
+
+
+        // Initialize the receiver for listening to logout notifications
+        logoutReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context : Context , intent : Intent) {
+                // Navigate to the LoginFragment
+                navigateToLoginFragment()
+            }
+        }
+
+        // Register the receiver to listen for the broadcast from FirebaseMessagingService
+        val filter = IntentFilter("com.example.app.ACTION_LOGOUT")
+        registerReceiver(logoutReceiver , filter , RECEIVER_NOT_EXPORTED)
 
         val result = getLoadTheData(this)
         Log.d("TAG" , "Result from getLoadTheData: $result")
@@ -113,6 +150,18 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
                     true
                 }
 
+                R.id.nav_logout -> {
+                    // navController.navigate(R.id.feedBackFragment)
+                    toastMessage(this@MainActivity , "Logout")
+                    // Get FirebaseAuth instance
+                    val auth = FirebaseAuth.getInstance()
+                    // Sign out the user
+                    auth.signOut()
+                    navController.navigate(R.id.welcomeFragment)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+
                 else -> false
             }
         }
@@ -135,6 +184,24 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
             }
             true
         }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                // Send this token to your server or save in Firestore under the user's ID
+                Log.d("FCM" , "Token: $token")
+            }
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister the receiver when the activity is destroyed
+        unregisterReceiver(logoutReceiver)
+    }
+
+    private fun navigateToLoginFragment() {
+        navController.navigate(R.id.welcomeFragment)
     }
 
     private fun openLogoutDialog() {
@@ -191,5 +258,6 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
         navHeader.findViewById<MaterialTextView>(R.id.nav_version).text =
             "App Version : $versionName"
     }
+
 
 }

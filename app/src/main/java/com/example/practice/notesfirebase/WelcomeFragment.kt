@@ -67,12 +67,12 @@ class WelcomeFragment : Fragment() {
 
     private fun validateInputs(email: String, password: String): Boolean {
         // Validate email and password
-        if (email.isNullOrEmpty()) {
+        if (email.isEmpty()) {
             Toast.makeText(requireContext(), "Please Enter Your Email", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        if (password.isNullOrEmpty()) {
+        if (password.isEmpty()) {
             Toast.makeText(requireContext(), "Please Enter Your Password", Toast.LENGTH_SHORT).show()
             return false
         }

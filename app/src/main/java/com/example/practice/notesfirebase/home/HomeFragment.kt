@@ -39,6 +39,14 @@ class HomeFragment : Fragment() {
         homeBinding.addNotes.setOnSingleClickListener {
             findNavController().navigate(R.id.addNoteFragment)
         }
+
+      /*  // Start a custom trace
+        val customTrace = FirebasePerformance.getInstance().newTrace("custom_trace")
+        customTrace.start()
+
+
+         // Stop the custom trace when the operation is completed
+        customTrace.stop()*/
         return homeBinding.root
     }
 

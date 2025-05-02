@@ -19,7 +19,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import java.io.ByteArrayInputStream
 
-
 class AddNoteFragment : Fragment() {
     private lateinit var addNoteBinding : FragmentAddNoteBinding
     private lateinit var firebaseStorage : FirebaseStorage
@@ -100,13 +99,13 @@ class AddNoteFragment : Fragment() {
     }
 
 
-      override fun onResume() {
-          super.onResume()
-          requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-          if (requireActivity() is MainActivity) {
-              (requireActivity() as MainActivity).hideBottomNavigationView(View.GONE)
-          }
-      }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner , callback)
+        if (requireActivity() is MainActivity) {
+            (requireActivity() as MainActivity).hideBottomNavigationView(View.GONE)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -11,6 +11,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.practice.notesfirebase.databinding.FragmentSplashBinding
 import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager.getLoadTheData
+import com.google.firebase.appdistribution.FirebaseAppDistribution
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -21,7 +22,23 @@ import java.util.Locale
 class SplashFragment : Fragment() {
     private lateinit var splashBinding : FragmentSplashBinding
     private val fragmentScope = CoroutineScope(Dispatchers.Main)
+    override fun onViewCreated(view : View , savedInstanceState : Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
+        val appDistribution = FirebaseAppDistribution.getInstance()
+        appDistribution.checkForNewRelease()
+                .addOnSuccessListener { release ->
+                    if (release != null) {
+                        // Show update dialog
+                        appDistribution.updateIfNewReleaseAvailable()
+                    } else {
+                        Log.d("TAG", "No new release found")
+                    }
+                }
+                .addOnFailureListener {
+                    Log.e("TAG", "Update check failed: ${it.message}")
+                }
 
+    }
     override fun onCreateView(
         inflater : LayoutInflater , container : ViewGroup? ,
         savedInstanceState : Bundle? ,

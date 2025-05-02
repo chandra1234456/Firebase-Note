@@ -1,11 +1,15 @@
 import com.android.build.api.dsl.SigningConfig
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.appdistribution")
+    id("com.google.gms.google-services")
+    // Add the Performance Monitoring Gradle plugin
+   // id("com.google.firebase.firebase-perf")
+    id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
 }
 
 android {
@@ -25,7 +29,7 @@ android {
         // Reusable signing config logic
         fun applySigningConfig(config: SigningConfig, name: String,boolean: Boolean) {
             if (boolean) {
-                /*val storeFileBase64Path = System.getenv("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")
+            /*val storeFileBase64Path = System.getenv("C:\Users\balachandra.d\private\NotesFirebase\.gradle\notefirebase.jks")
             val storeFilePath = System.getenv("KEYSTORE_FILE")
             val storePwd = System.getenv("KEYSTORE_PASSWORD")
             val keyAliasVal = System.getenv("KEY_ALIAS")
@@ -109,6 +113,17 @@ android {
         jvmTarget = "1.8"
     }
 }
+ktlint {
+    android = true                  // Enable Android-specific rules
+    ignoreFailures = false           // Fail the build if there are linting errors
+    disabledRules.set(setOf("no-wildcard-imports","final-newline"))
+    reporters {
+        reporter(ReporterType.PLAIN)           // Print the result in plain text format
+        reporter(ReporterType.CHECKSTYLE)       // Output the result in Checkstyle format
+        reporter(ReporterType.SARIF)            // Output the result in SARIF format
+    }
+}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -145,4 +160,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("com.google.firebase:firebase-messaging:24.1.1")
+
+    // Firebase Analytics
+    implementation ("com.google.firebase:firebase-analytics:21.2.0")
+
+    // Kotlin Extensions for Firebase Analytics
+    implementation ("com.google.firebase:firebase-analytics-ktx:21.2.0")
+
+
+    implementation("com.google.firebase:firebase-appdistribution:16.0.0-beta15")  // Check for latest version
+    // Google Play Services Measurement (ensure it's up-to-date)
+    implementation ("com.google.android.gms:play-services-measurement-api:21.2.0")
 }
