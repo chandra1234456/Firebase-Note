@@ -3,6 +3,7 @@ package com.example.practice.notesfirebase.util
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import java.io.File
 import java.security.GeneralSecurityException
 
 object EncryptedSharedPreferencesManager {
@@ -60,6 +61,28 @@ object EncryptedSharedPreferencesManager {
             // Handle potential security exceptions
             e.printStackTrace()
             return null
+        }
+    }
+    fun clearAllData(context: Context) {
+        try {
+            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+            val sharedPreferences = EncryptedSharedPreferences.create(
+                    PREFS_NAME,
+                    masterKeyAlias,
+                    context,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                                                                     )
+
+            sharedPreferences.edit().clear().apply()
+
+            // Delete the encrypted SharedPreferences file
+            val prefsFile = File(context.filesDir.parentFile, "shared_prefs/$PREFS_NAME.xml")
+            if (prefsFile.exists()) {
+                prefsFile.delete()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

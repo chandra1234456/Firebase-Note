@@ -26,8 +26,8 @@
                 android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="10dp"
-                android:visibility="gone"
-                android:src="@drawable/light_mode" />
+                android:visibility="visible"
+                android:src="@drawable/ic_format_list_bulleted" />
         </com.google.android.material.appbar.MaterialToolbar>
         <!-- Main content area with NavHostFragment -->
         <androidx.fragment.app.FragmentContainerView

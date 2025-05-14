@@ -26,6 +26,15 @@ class WelcomeFragment : Fragment() {
                              ): View {
         welcomeBinding = FragmentWelcomeBinding.inflate(inflater)
         firebaseAuth = FirebaseAuth.getInstance()
+        // This callback will only be called when MyFragment is at least Started.
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                (activity as MainActivity).finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner , callback)
+
 
         // Set the listener for the "Get Started" button
         welcomeBinding.btnGetStarted.setOnClickListener {

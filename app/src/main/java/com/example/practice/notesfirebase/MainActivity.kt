@@ -10,10 +10,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -21,6 +24,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.practice.notesfirebase.databinding.ActivityMainBinding
 import com.example.practice.notesfirebase.home.HomeFragmentListener
+import com.example.practice.notesfirebase.home.HomeListener
+import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager
 import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager.getLoadTheData
 import com.example.practice.notesfirebase.util.splitGetFirstString
 import com.example.practice.notesfirebase.util.toastMessage
@@ -32,13 +37,16 @@ import com.google.firebase.analytics.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 
+
 class MainActivity : AppCompatActivity() , HomeFragmentListener {
     private lateinit var mainBinding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var bottomNavView : BottomNavigationView
     private lateinit var drawerLayout : DrawerLayout
     private lateinit var logoutReceiver : BroadcastReceiver
-      private lateinit var analytics: FirebaseAnalytics
+    private lateinit var analytics: FirebaseAnalytics
+    private var backPressedTime: Long = 0
+    private lateinit var toast: Toast
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState : Bundle?) {
@@ -52,8 +60,7 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
              putString(FirebaseAnalytics.Param.ITEM_NAME, "My Item")
              putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
          }
-
-          analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+         analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
 
         // Obtain the FirebaseAnalytics instance.
         // throw RuntimeException("Test Crash")
@@ -87,19 +94,39 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
         // Setup Bottom Navigation
         bottomNavView = findViewById(R.id.bottom_navigation)
         NavigationUI.setupWithNavController(bottomNavView , navController)
-
-        // Use OnBackPressedDispatcher to handle back press
-        onBackPressedDispatcher.addCallback(this@MainActivity) {
-            // Custom back press handling
-            if (navController.currentDestination?.id == R.id.homeFragment) {
-                // If already on the HomeFragment, exit the activity or handle it accordingly
-                Log.d("MainActivity" , "Back pressed on HomeFragment")
-                finish() // Exit the activity or do something else (e.g. show confirmation)
+        // Handle back press with custom logic
+        onBackPressedDispatcher.addCallback(this) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                // Drawer is open
+                Log.d("Drawer", "Drawer is open")
+                drawerLayout.closeDrawers()
             } else {
-                // Navigate to HomeFragment when back button is pressed
-                bottomNavView.selectedItemId =
-                    R.id.nav_home // Ensure Home Fragment is selected in Bottom Navigation
-                navController.popBackStack(R.id.homeFragment , false) // Navigate to home fragment
+                // Drawer is closed
+                Log.d("Drawer", "Drawer is closed")
+                if (navController.currentDestination?.id == R.id.homeFragment) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - backPressedTime < 2000) {
+                        toast.cancel()
+                        finish() // Exit the app
+                    } else {
+                        backPressedTime = currentTime
+                        toast = Toast.makeText(this@MainActivity, "Press again to exit", Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                } else {
+                    // Navigate to HomeFragment
+                    bottomNavView.selectedItemId = R.id.nav_home
+                    navController.popBackStack(R.id.homeFragment, false)
+                }
+            }
+        }
+        //Sort The List according user Selection
+        mainBinding.ivSearch.setOnClickListener {
+            val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
+            if (currentFragment is HomeListener) {
+                currentFragment.sortOptionDialog()
+            } else {
+                Log.d("MainActivity", "Current fragment is not HomeFragment or doesn't implement HomeListener")
             }
         }
 
@@ -149,6 +176,11 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
                     drawerLayout.closeDrawers()
                     true
                 }
+                R.id.nav_dayNight ->{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //For night mode theme
+                    drawerLayout.closeDrawers()
+                   true
+                }
 
                 R.id.nav_logout -> {
                     // navController.navigate(R.id.feedBackFragment)
@@ -158,10 +190,10 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
                     // Sign out the user
                     auth.signOut()
                     navController.navigate(R.id.welcomeFragment)
+                    EncryptedSharedPreferencesManager.clearAllData(this)
                     drawerLayout.closeDrawers()
                     true
                 }
-
                 else -> false
             }
         }
@@ -204,9 +236,6 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
         navController.navigate(R.id.welcomeFragment)
     }
 
-    private fun openLogoutDialog() {
-        toastMessage(this , "Logout")
-    }
 
     override fun onSupportNavigateUp() : Boolean {
         // Handle navigation when the up button is pressed
@@ -234,6 +263,7 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
         when (item.itemId) {
             R.id.ivSearch -> {
                 navController.navigate(R.id.searchFragment) // Navigate to searchFragment
+                toastMessage(this,"TOAST")
                 return true // Indicate the action was handled
             }
 
@@ -258,6 +288,5 @@ class MainActivity : AppCompatActivity() , HomeFragmentListener {
         navHeader.findViewById<MaterialTextView>(R.id.nav_version).text =
             "App Version : $versionName"
     }
-
 
 }

@@ -1,5 +1,9 @@
 package com.example.practice.notesfirebase.home
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -11,25 +15,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.practice.notesfirebase.MainActivity
 import com.example.practice.notesfirebase.R
 import com.example.practice.notesfirebase.databinding.FragmentHomeBinding
 import com.example.practice.notesfirebase.home.adapter.HomeNotesAdapter
 import com.example.practice.notesfirebase.home.data.NotesData
+import com.example.practice.notesfirebase.remainder.ReminderReceiver
 import com.example.practice.notesfirebase.util.EncryptedSharedPreferencesManager.getLoadTheData
 import com.example.practice.notesfirebase.util.Progress
 import com.example.practice.notesfirebase.util.setOnSingleClickListener
+import com.example.practice.notesfirebase.util.toastMessage
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(),HomeListener {
     private lateinit var homeBinding : FragmentHomeBinding
     private lateinit var firebaseStorage : FirebaseStorage
     private var email = ""
     private lateinit var notesAdapter : HomeNotesAdapter
+    private var fetchedNotesData :List<NotesData> = ArrayList()
     override fun onCreateView(
         inflater : LayoutInflater , container : ViewGroup? ,
         savedInstanceState : Bundle? ,
@@ -43,10 +51,8 @@ class HomeFragment : Fragment() {
       /*  // Start a custom trace
         val customTrace = FirebasePerformance.getInstance().newTrace("custom_trace")
         customTrace.start()
-
-
-         // Stop the custom trace when the operation is completed
-        customTrace.stop()*/
+      // Stop the custom trace when the operation is completed
+          customTrace.stop()*/
         return homeBinding.root
     }
 
@@ -110,7 +116,7 @@ class HomeFragment : Fragment() {
             // Once all tasks are complete, process the results
             Tasks.whenAllComplete(fetchTasks).addOnCompleteListener {
                 // Collect the successful results (i.e., non-null results)
-                val fetchedNotesData = fetchTasks.mapNotNull { it.result }
+                 fetchedNotesData = fetchTasks.mapNotNull { it.result }
                 Log.d("TAG" , "Fetched NotesData: $fetchedNotesData")
                 Progress.dismiss()
                 if (fetchedNotesData.isNotEmpty()) {
@@ -146,5 +152,24 @@ class HomeFragment : Fragment() {
             (requireActivity() as MainActivity).hideTheToolBar(View.VISIBLE)
             (requireActivity() as MainActivity).hideBottomNavigationView(View.VISIBLE)
         }
+    }
+
+    override fun sortOptionDialog() {
+        toastMessage(requireContext(),"HOME")
+        if (fetchedNotesData.isNotEmpty()) {
+            notesAdapter = HomeNotesAdapter(fetchedNotesData)
+            homeBinding.apply {
+                notesRecyclerview.visibility = View.VISIBLE
+                tvNoNotes.visibility = View.GONE
+                notesRecyclerview.layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
+                notesRecyclerview.adapter = notesAdapter
+            }
+        } else {
+            homeBinding.apply {
+                notesRecyclerview.visibility = View.GONE
+                tvNoNotes.visibility = View.VISIBLE
+            }
+        }
+
     }
 }
